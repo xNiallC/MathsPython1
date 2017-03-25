@@ -1,9 +1,6 @@
 import numpy as np
 import math
 
-file1 = 'history.txt'
-file2 = 'queries.txt'
-
 # Read text and return list of strings of each row
 def readTxt (fileInput):
     with open(fileInput, 'r') as f:
@@ -194,4 +191,4 @@ def recommend(itemHistory, queries):
         itemsToRecommend = ' '.join(itemsToRecommend)
         print("Recommend: " + itemsToRecommend)
 
-recommend(file1, file2)
+recommend('history.txt', 'queries.txt')
