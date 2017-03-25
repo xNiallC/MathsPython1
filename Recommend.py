@@ -157,10 +157,6 @@ def stringsToLists(listInput):
         stringList.append(i.split())
     return stringList
 
-t = readTxt(file1)
-itemsDict = makeItemToItemDict(t)
-anglesDict = calcAllAngles(itemsDict)
-done = matchItem(anglesDict)
 def recommend(itemHistory, queries):
     # Read in the txts
     itemHistory = readTxt(itemHistory)
@@ -169,6 +165,7 @@ def recommend(itemHistory, queries):
     queriesList = stringsToLists(queries)
     # Get our item-to-item history dict
     items = makeItemToItemDict(itemHistory)
+    anglesDict = calcAllAngles(items)
     # Run the function to get the item-to-item angle matches
     itemMatches = matchItem(anglesDict)
     # Format everything
@@ -196,5 +193,5 @@ def recommend(itemHistory, queries):
         itemsToRecommend = sorted(itemsToRecommend, key=itemsToRecommend.get)
         itemsToRecommend = ' '.join(itemsToRecommend)
         print("Recommend: " + itemsToRecommend)
-        
+
 recommend(file1, file2)
