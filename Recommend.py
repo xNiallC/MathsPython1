@@ -125,20 +125,22 @@ def calcAllAngles(dictInput):
 # of floated copies of the strings. We use this to sort our angles, to Find
 # the lowest for matching. If we have an angle < 90, that's our match, so
 # we return the item ID and the angle. Otherwise, no match.
-def matchItem(dictInput):
-    itemMatches = {}
-    for key, item in dictInput.items():
-        angleList = []
-        for subkey, subitem in item.items():
-            angleList.append(float(subitem))
-        sortedAngles = sorted(angleList)
+
+
+def matchItem(itemDict, queries, cart):
+    for i in queries:
+        anglesList = []
+        itemToMatch = itemDict.get(i)
+        for subkey, subitem in itemToMatch.items():
+            if subkey not in cart:
+                anglesList.append(float(subitem))
+        sortedAngles = sorted(anglesList)
         if sortedAngles[0] < 90:
-            for subkey, subitem in item.items():
-                if float(subitem) == sortedAngles[0]:
-                    itemMatches[key] = [subkey, sortedAngles[0]]
+            for subkey, subitem in itemToMatch.items():
+                if sortedAngles[0] == float(subitem):
+                    return [subkey, sortedAngles[0]]
         else:
-            itemMatches[key] = 'no match'
-    return itemMatches
+            return 'no match'
 
 # Get an average for each angle calculation per item, add to a list
 # then average this list to get total average.
@@ -155,8 +157,18 @@ def averageAngle(dictInput):
 def stringsToLists(listInput):
     stringList = []
     for i in listInput:
-        stringList.append(i.split())
+        if i != " ":
+            stringList.append(i.split())
     return stringList
+
+def recommendOrder(matchesDict):
+    itemsList = []
+    for key, item in matchesDict.items():
+        if type(item) == list and not any(item[0] == i[0] for i in itemsList):
+                itemsList.append(item)
+    itemsList.sort(key=lambda x: x[1])
+    return itemsList
+
 
 def recommend(itemHistory, queries):
     # Read in the txts
@@ -168,34 +180,26 @@ def recommend(itemHistory, queries):
     items = makeItemToItemDict(itemHistory)
     anglesDict = calcAllAngles(items)
     # Run the function to get the item-to-item angle matches
-    itemMatches = matchItem(anglesDict)
     # Format everything
     print("Positive entries: " + str(positiveEntries(itemHistory)))
     print("Average angle: " + averageAngle(anglesDict))
     # This row count is helpful for formatting, can iterate through non-list queries
     rowCount = 0
     for item in queriesList:
-        # Create empty dict
-        itemsToRecommend = {}
-        # Print the shopping cart
-        currentItems = queries[rowCount]
-        print("Shopping cart: " + str(currentItems))
-        rowCount += 1
+        itemMatches = {}
+        print("Shopping cart: ") + queries[rowCount]
         for i in item:
-            # This checks if there is a recommendation, or if 'no match' was returned
-            if type(itemMatches[i]) == list and itemMatches[i][0] not in currentItems:
-                # Print the item, the match, and the angle from the itemMatches function call
-                print("Item: " + str(i) + "; match: " + str(itemMatches[i][0]) + "; angle: " + str(itemMatches[i][1]))
-                # If the item recommendation isn't already in the dict, we add it
-                if str(itemMatches[i][0]) not in itemsToRecommend.keys():
-                    itemsToRecommend[str(itemMatches[i][0])] = str(itemMatches[i][1])
-            elif type(itemMatches[i]) == str:
-                print("Item: " + str(i) + " " + str(itemMatches[i]))
+            itemMatch = matchItem(anglesDict, i, item)
+            itemMatches[i] = itemMatch
+            if type(itemMatch) == list:
+                print("Item: " + i + "; match: " + itemMatch[0] + "; angle: " + str(itemMatch[1]))
             else:
-                print("Item: " + str(i) + " no match")
-        # We sort the recommendation properly so the first value is the lowest angle
-        itemsToRecommend = sorted(itemsToRecommend, key=itemsToRecommend.get)
-        itemsToRecommend = ' '.join(itemsToRecommend)
-        print("Recommend: " + itemsToRecommend)
+                print("Item: " + i + " no match")
+        recommendOrderedList = recommendOrder(itemMatches)
+        recommendString = ''
+        for i in recommendOrderedList:
+            recommendString += (" " + i[0])
+        print("Recommend:" + recommendString)
+        rowCount += 1
 
 recommend('history.txt', 'queries.txt')
