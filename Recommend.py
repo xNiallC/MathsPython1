@@ -178,18 +178,21 @@ def recommend(itemHistory, queries):
         # Create empty dict
         itemsToRecommend = {}
         # Print the shopping cart
-        print("Shopping cart: " + str(queries[rowCount]))
+        currentItems = queries[rowCount]
+        print("Shopping cart: " + str(currentItems))
         rowCount += 1
         for i in item:
             # This checks if there is a recommendation, or if 'no match' was returned
-            if type(itemMatches[i]) == list:
+            if type(itemMatches[i]) == list and itemMatches[i][0] not in currentItems:
                 # Print the item, the match, and the angle from the itemMatches function call
                 print("Item: " + str(i) + "; match: " + str(itemMatches[i][0]) + "; angle: " + str(itemMatches[i][1]))
                 # If the item recommendation isn't already in the dict, we add it
                 if str(itemMatches[i][0]) not in itemsToRecommend.keys():
                     itemsToRecommend[str(itemMatches[i][0])] = str(itemMatches[i][1])
+            elif type(itemMatches[i]) == str:
+                print("Item: " + str(i) + " " + str(itemMatches[i]))
             else:
-                print("Item: " + str(i) + "; match: " + str(itemMatches[i]))
+                print("Item: " + str(i) + " no match")
         # We sort the recommendation properly so the first value is the lowest angle
         itemsToRecommend = sorted(itemsToRecommend, key=itemsToRecommend.get)
         itemsToRecommend = ' '.join(itemsToRecommend)
