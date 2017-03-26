@@ -166,6 +166,7 @@ def recommendOrder(matchesDict):
     for key, item in matchesDict.items():
         if type(item) == list and not any(item[0] == i[0] for i in itemsList):
                 itemsList.append(item)
+    # Lambda function to sort list of lists depending on angle in sublist
     itemsList.sort(key=lambda x: x[1])
     return itemsList
 
@@ -186,15 +187,22 @@ def recommend(itemHistory, queries):
     # This row count is helpful for formatting, can iterate through non-list queries
     rowCount = 0
     for item in queriesList:
+        # Make empty dict
         itemMatches = {}
+        # Print cart from queries
         print("Shopping cart: ") + queries[rowCount]
+        # For each item in our query
         for i in item:
+            # Find a match for the item
             itemMatch = matchItem(anglesDict, i, item)
             itemMatches[i] = itemMatch
+            # If the item is a list we know it's matched so print the item and the angle
             if type(itemMatch) == list:
                 print("Item: " + i + "; match: " + itemMatch[0] + "; angle: " + str(itemMatch[1]))
+            # Otherwise no matched
             else:
                 print("Item: " + i + " no match")
+        # Put our matches into a function that orders them based on best recommendation
         recommendOrderedList = recommendOrder(itemMatches)
         recommendString = ''
         for i in recommendOrderedList:
