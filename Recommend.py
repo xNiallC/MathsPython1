@@ -49,12 +49,12 @@ def createAllHistories(listInput, forItems = False):
     allHistories = {}
     if not forItems:
         for i in listInput[1:]:
-            if not allHistories.has_key(i[0]):
+            if i[0] not in allHistories:
                 customerHistory = createCustomerPurchaseHistory(listInput, i[0])
                 allHistories[i[0]] = customerHistory
     else:
         for i in listInput[1:]:
-            if not allHistories.has_key(i[2]):
+            if i[2] not in allHistories:
                 customerHistory = createCustomerPurchaseHistory(listInput, i[2], forItems = True)
                 allHistories[i[2]] = customerHistory
     return allHistories
@@ -190,7 +190,7 @@ def recommend(itemHistory, queries):
         # Make empty dict
         itemMatches = {}
         # Print cart from queries
-        print("Shopping cart: ") + queries[rowCount]
+        print("Shopping cart: " + str(queries[rowCount]))
         # For each item in our query
         for i in item:
             # Find a match for the item
