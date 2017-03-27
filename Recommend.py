@@ -179,6 +179,7 @@ def recommend(itemHistory, queries):
     queriesList = stringsToLists(queries)
     # Get our item-to-item history dict
     items = makeItemToItemDict(itemHistory)
+    
     anglesDict = calcAllAngles(items)
     # Run the function to get the item-to-item angle matches
     # Format everything
@@ -210,4 +211,4 @@ def recommend(itemHistory, queries):
         print("Recommend:" + recommendString)
         rowCount += 1
 
-recommend('history.txt', 'queries.txt')
+recommend('history3.txt', 'queries3.txt')
