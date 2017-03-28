@@ -26,18 +26,20 @@ def positiveEntries(listInput):
 
 # Take a list, a row, and a column from row. Return a very specific single value from list.
 def returnValueFromRow(listInput, rowNumber, columnNumber):
-    return str(listInput[rowNumber]).split()[columnNumber]
+    return str(listInput[rowNumber]).split(" ")[columnNumber]
 
 # Create a history for a specific customer of their unique purchases
 def createCustomerPurchaseHistory(listInput, customerID, forItems = False):
     customerHistory = []
     if not forItems:
         for i in listInput[1:]:
-            if i[0] == str(customerID) and i[2] not in customerHistory:
-                customerHistory.append(i[2])
+            i = i.split(" ")
+            if i[0] == str(customerID) and i[1] not in customerHistory:
+                customerHistory.append(i[1])
     else:
         for i in listInput[1:]:
-            if i[2] == str(customerID) and i[0] not in customerHistory:
+            i = i.split(" ")
+            if i[1] == str(customerID) and i[0] not in customerHistory:
                 customerHistory.append(i[0])
     return customerHistory
 
@@ -49,14 +51,16 @@ def createAllHistories(listInput, forItems = False):
     allHistories = {}
     if not forItems:
         for i in listInput[1:]:
+            i = i.split(" ")
             if i[0] not in allHistories:
                 customerHistory = createCustomerPurchaseHistory(listInput, i[0])
                 allHistories[i[0]] = customerHistory
     else:
         for i in listInput[1:]:
-            if i[2] not in allHistories:
-                customerHistory = createCustomerPurchaseHistory(listInput, i[2], forItems = True)
-                allHistories[i[2]] = customerHistory
+            i = i.split(" ")
+            if i[1] not in allHistories:
+                customerHistory = createCustomerPurchaseHistory(listInput, i[1], forItems = True)
+                allHistories[i[1]] = customerHistory
     return allHistories
 
 # Take a customer's purchase history, and the number of itemsBought
@@ -91,6 +95,7 @@ def allCustomerItemPurchaseHistory(dictInput, listInput, forItems = False):
 def makeItemToItemDict(listInput):
     # We specify forItems = True, which runs the functions in a different manner
     # to create item-to-customer history
+
     allHistories = createAllHistories(listInput, forItems = True)
     itemHistoryDict = allCustomerItemPurchaseHistory(allHistories, listInput, forItems = True)
     return itemHistoryDict
@@ -158,7 +163,7 @@ def stringsToLists(listInput):
     stringList = []
     for i in listInput:
         if i != " ":
-            stringList.append(i.split())
+            stringList.append(i.split(" "))
     return stringList
 
 def recommendOrder(matchesDict):
@@ -179,7 +184,7 @@ def recommend(itemHistory, queries):
     queriesList = stringsToLists(queries)
     # Get our item-to-item history dict
     items = makeItemToItemDict(itemHistory)
-    
+
     anglesDict = calcAllAngles(items)
     # Run the function to get the item-to-item angle matches
     # Format everything
@@ -187,6 +192,7 @@ def recommend(itemHistory, queries):
     print("Average angle: " + averageAngle(anglesDict))
     # This row count is helpful for formatting, can iterate through non-list queries
     rowCount = 0
+
     for item in queriesList:
         # Make empty dict
         itemMatches = {}
