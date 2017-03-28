@@ -4,6 +4,7 @@
 
 import numpy as np
 import math
+from decimal import *
 
 # Read text and return list of strings of each row
 def readTxt (fileInput):
@@ -156,7 +157,7 @@ def averageAngle(dictInput):
         for subkey, subitem in item.items():
             angles.append(float(subitem))
         allAngles.append(sum(angles) / len(angles))
-    return "%.2f" % (sum(allAngles) / len(allAngles))
+    return "{:.2f}".format((sum(allAngles) / len(allAngles)))
 
 # Convert a string to a list seperated at whitespace
 def stringsToLists(listInput):
@@ -205,7 +206,7 @@ def recommend(itemHistory, queries):
             itemMatches[i] = itemMatch
             # If the item is a list we know it's matched so print the item and the angle
             if type(itemMatch) == list:
-                print("Item: " + i + "; match: " + itemMatch[0] + "; angle: " + str(itemMatch[1]))
+                print("Item: " + i + "; match: " + itemMatch[0] + "; angle: " + str('{:.2f}'.format(itemMatch[1])))
             # Otherwise no matched
             else:
                 print("Item: " + i + " no match")
@@ -217,4 +218,4 @@ def recommend(itemHistory, queries):
         print("Recommend:" + recommendString)
         rowCount += 1
 
-recommend('history3.txt', 'queries3.txt')
+recommend('history2.txt', 'queries2.txt')
