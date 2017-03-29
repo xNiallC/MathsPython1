@@ -101,6 +101,7 @@ def makeItemToItemDict(listInput):
     itemHistoryDict = allCustomerItemPurchaseHistory(allHistories, listInput, forItems = True)
     return itemHistoryDict
 
+test = True
 # Calculate angle between 2 arrays
 def calcAngle(array1, array2):
     #Convert arrays to numpy arrays to perform vector operations
@@ -133,20 +134,19 @@ def calcAllAngles(dictInput):
 # we return the item ID and the angle. Otherwise, no match.
 
 
-def matchItem(itemDict, queries, cart):
-    for i in queries:
-        anglesList = []
-        itemToMatch = itemDict.get(i)
+def matchItem(itemDict, query, cart):
+    anglesList = []
+    itemToMatch = itemDict[query]
+    for subkey, subitem in itemToMatch.items():
+        if subkey not in cart:
+            anglesList.append(float(subitem))
+    sortedAngles = sorted(anglesList)
+    if sortedAngles[0] < 90:
         for subkey, subitem in itemToMatch.items():
-            if subkey not in cart:
-                anglesList.append(float(subitem))
-        sortedAngles = sorted(anglesList)
-        if sortedAngles[0] < 90:
-            for subkey, subitem in itemToMatch.items():
-                if sortedAngles[0] == float(subitem):
-                    return [subkey, sortedAngles[0]]
-        else:
-            return 'no match'
+            if sortedAngles[0] == float(subitem):
+                return [subkey, sortedAngles[0]]
+    else:
+        return 'no match'
 
 # Get an average for each angle calculation per item, add to a list
 # then average this list to get total average.
